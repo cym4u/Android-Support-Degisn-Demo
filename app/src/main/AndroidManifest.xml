@@ -16,6 +16,8 @@
             </intent-filter>
         </activity>
         <activity android:name="._01TextInputLayoutActivity"/>
+        <activity android:name="._02TabLayoutActivity"/>
+        <activity android:name="._03CollapsingToolbarLayoutActivity"/>
     </application>
 
 </manifest>
