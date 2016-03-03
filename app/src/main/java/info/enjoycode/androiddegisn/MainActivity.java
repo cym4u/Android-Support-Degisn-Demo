@@ -58,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 startActivity(_03CollapsingToolbarLayoutActivity.class);
                 break;
             case R.id.navigation_item_4:
+                startActivity(_04BottomSheetsActivity.class);
                 break;
             case R.id.navigation_item_5:
                 break;
