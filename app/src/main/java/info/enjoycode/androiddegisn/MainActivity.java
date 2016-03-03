@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
+
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         mDrawerLayout.closeDrawer(GravityCompat.START);
@@ -69,4 +70,5 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private void startActivity(Class<? extends Activity> clazz) {
         startActivity(new Intent(this, clazz));
     }
+
 }

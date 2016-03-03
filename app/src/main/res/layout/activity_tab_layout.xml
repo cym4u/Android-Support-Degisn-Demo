@@ -12,6 +12,7 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:minHeight="?attr/actionBarSize"
+        app:layout_scrollFlags="scroll|enterAlways"
         app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <android.support.design.widget.TabLayout
@@ -20,9 +21,9 @@
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         app:tabGravity="fill"
-        app:tabTextAppearance="@style/TextAppearance.Design.Tab"
+        app:tabMode="scrollable"
         app:tabSelectedTextColor="@color/colorAccent"
-        app:tabMode="scrollable" />
+        app:tabTextAppearance="@style/TextAppearance.Design.Tab" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

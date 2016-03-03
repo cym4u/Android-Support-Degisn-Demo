@@ -10,6 +10,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -17,7 +19,7 @@ import android.widget.TextView;
 /**
  * Created by livin on 2016/3/3.
  */
-public class _02TabLayoutActivity extends AppCompatActivity {
+public class _02TabLayoutActivity extends AppCompatActivity implements Toolbar.OnMenuItemClickListener {
     private Toolbar mToolbar;
     private TabLayout mTabLayout;
     private ViewPager mPager;
@@ -29,7 +31,7 @@ public class _02TabLayoutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_tab_layout);
         mAdapter = new MyPagerAdapter(getSupportFragmentManager());
         mToolbar = (Toolbar) findViewById(R.id.app_bar);
-        setSupportActionBar(mToolbar);
+        initToolBar();
         mTabLayout = (TabLayout) findViewById(R.id.tab_layout);
         mPager = (ViewPager) findViewById(R.id.pager);
         mPager.setAdapter(mAdapter);
@@ -41,6 +43,28 @@ public class _02TabLayoutActivity extends AppCompatActivity {
 
     }
 
+    private void initToolBar() {
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+        mToolbar.setTitle("Title");
+        mToolbar.setSubtitle("SubTitle");
+        mToolbar.setLogo(R.mipmap.ic_launcher);
+        mToolbar.setNavigationIcon(R.drawable.ic_select_all_white_24dp);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        mToolbar.setOnMenuItemClickListener(this);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        return false;
+    }
 
     public static class MyFragment extends Fragment {
         public static final java.lang.String ARG_PAGE = "arg_page";
