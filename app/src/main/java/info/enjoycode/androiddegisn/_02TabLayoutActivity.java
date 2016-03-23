@@ -38,7 +38,7 @@ public class _02TabLayoutActivity extends AppCompatActivity implements Toolbar.O
         mTabLayout.setTabsFromPagerAdapter(mAdapter);
 
         mTabLayout.setupWithViewPager(mPager);
-        mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
+//        mPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(mTabLayout));
 
 
     }

@@ -38,29 +38,34 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 R.string.drawer_close);
         mDrawerLayout.setDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
-        mDrawerLayout.openDrawer(GravityCompat.START);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mDrawerLayout.openDrawer(GravityCompat.START);
 
+    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         mDrawerLayout.closeDrawer(GravityCompat.START);
         Toast.makeText(this, item.getTitle() + "被点击了", Toast.LENGTH_SHORT).show();
         switch (item.getItemId()) {
-            case R.id.navigation_item_1:
+            case R.id.navigation_item_0:
                 startActivity(_01TextInputLayoutActivity.class);
                 break;
-            case R.id.navigation_item_2:
+            case R.id.navigation_item_1:
                 startActivity(_02TabLayoutActivity.class);
                 break;
-            case R.id.navigation_item_3:
+            case R.id.navigation_item_2:
                 startActivity(_03CollapsingToolbarLayoutActivity.class);
                 break;
-            case R.id.navigation_item_4:
+            case R.id.navigation_item_3:
                 startActivity(_04BottomSheetsActivity.class);
                 break;
-            case R.id.navigation_item_5:
+            case R.id.navigation_item_4:
+                startActivity(_05FlexibleSpaceWithImageActivity.class);
                 break;
         }
 

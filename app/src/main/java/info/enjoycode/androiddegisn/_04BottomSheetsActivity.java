@@ -1,81 +1,131 @@
 package info.enjoycode.androiddegisn;
 
-import android.content.res.Configuration;
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
-import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.view.ViewTreeObserver;
+import android.widget.Button;
 import android.widget.TextView;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
+import static android.support.design.widget.BottomSheetBehavior.STATE_COLLAPSED;
+import static android.support.design.widget.BottomSheetBehavior.STATE_DRAGGING;
+import static android.support.design.widget.BottomSheetBehavior.STATE_EXPANDED;
+import static android.support.design.widget.BottomSheetBehavior.STATE_HIDDEN;
+import static android.support.design.widget.BottomSheetBehavior.STATE_SETTLING;
 
 /**
  * Created by livin on 2016/3/3.
  */
-public class _04BottomSheetsActivity  extends AppCompatActivity implements View.OnClickListener {
-    private TextView mSwap;
-    private int mDayNightMode = AppCompatDelegate.MODE_NIGHT_AUTO;
-    public BottomSheetBehavior behavior;
-    private LinearLayout bottomSheetContent;
-    ImageView blackView;
+public class _04BottomSheetsActivity  extends AppCompatActivity  {
+    @Bind(R.id.coordinatorLayout)
+    View rootView;
 
+    @Bind(R.id.bottom_sheet_status)
+    TextView bottom_sheet_status;
+
+    @Bind(R.id.bottomSheet)
+    View bottomSheet;
+
+    @Bind(R.id.bottom_sheet_header)
+    View bottom_sheet_header;
+
+    @Bind(R.id.btn_peek)
+    Button btn_peek;
+
+    BottomSheetBehavior mBehavior;
+    Toolbar mToolbar;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_bottom_sheets);
-        mSwap = (TextView)findViewById(R.id.swap_text);
-        mSwap.setOnClickListener(this);
-        bottomSheetContent = (LinearLayout)findViewById(R.id.bottom_sheet_content);
-        blackView = (ImageView)findViewById(R.id.black_view);
+        setContentView(R.layout.activity_bottom_sheet);
 
-        behavior = BottomSheetBehavior.from(bottomSheetContent);
-        behavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
-            @Override
-            public void onStateChanged(@NonNull View bottomSheet, int newState) {
-                if(newState == BottomSheetBehavior.STATE_COLLAPSED||newState == BottomSheetBehavior.STATE_HIDDEN){
-//                    blackView.setBackgroundColor(Color.TRANSPARENT);
-                    blackView.setVisibility(View.GONE);
-                }
+        mToolbar = (Toolbar) findViewById(R.id.app_bar);
+        setSupportActionBar(mToolbar);
+        ButterKnife.bind(this);
+        mBehavior = BottomSheetBehavior.from(bottomSheet);
+        mBehavior.setBottomSheetCallback(new BottomSheetBehavior.BottomSheetCallback() {
+            public void onStateChanged(@NonNull View bottomSheet, @BottomSheetBehavior.State int newState) {
+                bottom_sheet_status.setText(getStatusMessage(newState));
             }
 
-            @Override
             public void onSlide(@NonNull View bottomSheet, float slideOffset) {
-                // React to dragging events
-                blackView.setVisibility(View.VISIBLE);
-                ViewCompat.setAlpha(blackView, slideOffset);
+            }
+
+            private String getStatusMessage(int newState) {
+                switch (newState) {
+                    case STATE_EXPANDED:
+                        return getResources().getString(R.string.status_expanded);
+                    case STATE_COLLAPSED:
+                        return getResources().getString(R.string.status_collapsed);
+                    case STATE_DRAGGING:
+                        return getResources().getString(R.string.status_dragging);
+                    case STATE_SETTLING:
+                        return getResources().getString(R.string.status_settling);
+                    case STATE_HIDDEN:
+                        return getResources().getString(R.string.status_hidden);
+                    default:
+                        return null;
+                }
             }
         });
 
+
+        // Attach view-tree observer to set the bottom sheet's peek-height once the view is laid out.
+        attachViewTreeObserver();
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        int uiMode = getResources().getConfiguration().uiMode;
-        int dayNightUiMode = uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        if (dayNightUiMode == Configuration.UI_MODE_NIGHT_NO) {
-            mDayNightMode = AppCompatDelegate.MODE_NIGHT_NO;
-        } else if (dayNightUiMode == Configuration.UI_MODE_NIGHT_YES) {
-            mDayNightMode = AppCompatDelegate.MODE_NIGHT_YES;
-        } else {
-            mDayNightMode = AppCompatDelegate.MODE_NIGHT_AUTO;
+    /**
+     * Once the view has been created get the height of the bottom-sheet's header-text and
+     * use it to set the peek-height of the bottom-sheet.
+     */
+    private void attachViewTreeObserver() {
+        ViewTreeObserver viewTreeObserver = rootView.getViewTreeObserver();
+        if (viewTreeObserver.isAlive()) {
+            viewTreeObserver.addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+                @Override
+                public void onGlobalLayout() {
+                    rootView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    setBottomSheetPeekHeight(true);
+                }
+            });
         }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.swap_text:
-                if (mDayNightMode==AppCompatDelegate.MODE_NIGHT_NO)
-                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-                else
-                    getDelegate().setLocalNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-                recreate();
-                break;
-        }
+    private static final String TAG = "MainActivity";
+    boolean shouldShowPeek  = true;
+    @OnClick(R.id.btn_peek)
+    public void peek(View v) {
+        shouldShowPeek = !shouldShowPeek;
+        setBottomSheetPeekHeight(shouldShowPeek);
     }
+
+    private void setBottomSheetPeekHeight(boolean shouldShowPeek) {
+        mBehavior.setPeekHeight(shouldShowPeek ? bottom_sheet_header.getHeight() : 0);
+        mBehavior.setState(STATE_COLLAPSED);
+        btn_peek.setText((!shouldShowPeek? "show" : "hide") + " peek");
+    }
+
+    @OnClick(R.id.btn_toggle)
+    public void toggle(View v) {
+        mBehavior.setState(getNewState());
+    }
+    @BottomSheetBehavior.State
+    private int getNewState() {
+        return mBehavior.getState() == STATE_COLLAPSED ? STATE_EXPANDED : STATE_COLLAPSED;
+    }
+    @OnClick(R.id.bottom_sheet_header)
+    public void open(View v) {
+        mBehavior.setState(STATE_EXPANDED);
+    }
+
 }
